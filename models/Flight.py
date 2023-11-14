@@ -32,6 +32,7 @@ class FlightOption:
     carrier: str
     escalas: str
     price: float
+    link: str = field(repr=False)
 
 
 @dataclass(frozen=True)

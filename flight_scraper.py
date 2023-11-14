@@ -66,6 +66,7 @@ class GoogleFligthsScraper:
         time.sleep(Params.DELAY)
 
         html = self.driver.page_source
+        self.link = self.driver.current_url
         soup = BeautifulSoup(html, "html.parser")
 
         flights_options = soup.find_all("div", {"class": "OgQvJf nKlB3b"})
@@ -116,6 +117,7 @@ class GoogleFligthsScraper:
             cookies.click()
         except Exception as e:
             logging.warning(f"! Failed to handle cookies pop-up")
+            pass
 
     def __parse_tabla_precios(self, cells: List[WebElement]) -> List[FlightAlternative]:
         fechas = []
@@ -190,7 +192,7 @@ class GoogleFligthsScraper:
         carrier = departure_info[-1].text
         escalas = data.find_next("div", {"class": "BbR8Ec"}).find_all("div")[0].text
         price = self.__parse_price(data.find_next("div", {"class": "U3gSDe"}).text)
-        return FlightOption(departure, carrier, escalas, price)
+        return FlightOption(departure, carrier, escalas, price, self.link)
 
     def __parse_price(self, cellText: str) -> float:
         if "€" in cellText:
